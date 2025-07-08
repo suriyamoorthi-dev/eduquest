@@ -6,15 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="See your test results, weak areas and get smart recommendations to improve. Powered by AI for TNPSC, SSC, Railway & UPSC preparation.">
 
-  <!-- ✅ Google AdSense Auto Ads -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4605579560460422"
-    crossorigin="anonymous"></script>
-
-  <!-- Bootstrap + Google Fonts -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   
-
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -67,6 +61,20 @@
       font-size: 15px;
     }
 
+    /* Styling for custom ad containers */
+    .ad-container {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      text-align: center; /* Center your ad content within this div */
+      /* You might want to add a minimum height or background for visibility during development */
+      /* min-height: 100px; */
+      /* background-color: #e0e0e0; */
+      /* border: 1px dashed #ccc; */
+      display: flex; /* Use flexbox to center content vertically/horizontally */
+      justify-content: center;
+      align-items: center;
+    }
+
     footer {
       text-align: center;
       margin-top: 60px;
@@ -101,6 +109,10 @@
       <h2>🎯 Test Completed</h2>
       <h4 class="text-success">You scored {{ score }} out of {{ total }}</h4>
 
+      <div class="ad-container">
+        <p>Your Ad 1 Here (e.g., 320x100 banner)</p>
+      </div>
+
       {% if weak_areas %}
         <div class="alert alert-warning mt-4">
           <h5 class="mb-3">⚠️ Weaker Areas Detected:</h5>
@@ -116,29 +128,24 @@
         </div>
       {% endif %}
 
+      <div class="ad-container">
+        <p>Your Ad 2 Here (e.g., 300x250 banner)</p>
+      </div>
+
       <a href="/" class="btn btn-outline-primary mt-4">Take Another Test</a>
       <a href="{{ url_for('review_answers') }}" class="btn btn-primary mt-3">Show Answers</a>
 
     </div>
   </div>
 
-  <!-- ✅ Optional Manual Ad Unit Below Result (if needed in future) -->
-  <!--
   <div class="container text-center mt-4">
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-4605579560460422"
-         data-ad-slot="YOUR_SLOT_ID"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
+    <div class="ad-container">
+      <p>Your Ad 3 Here (e.g., a full-width mobile banner or text ad)</p>
+    </div>
   </div>
-  -->
 
   <footer>
-    SmartExam © 2025 | Powered by AI for Exam Preparation<br>
+    RankPro Exam © 2025 | Powered by AI for Exam Preparation<br>
     This site uses cookies and may display ads to support free content.<br>
     <a href="/terms" style="color:#6b7280; text-decoration: underline;">Terms</a> |
     <a href="/privacy" style="color:#6b7280; text-decoration: underline;">Privacy</a>

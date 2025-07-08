@@ -76,7 +76,6 @@ def adsense():
 def doubt_page():
     return render_template('doubt.html')
 
-
 @app.route('/ask', methods=['POST'])
 def ask_ai():
     data = request.get_json()
@@ -90,44 +89,39 @@ def ask_ai():
             "error": "Missing fields: mode, topic, exam, and question (for doubt mode)"
         }), 400
 
-    # Exam-specific prompt base
     exam_names = {
-        "jee": "JEE (Joint Entrance Exam - for Engineering aspirants)",
-        "neet": "NEET (Medical Entrance - for Biology, Physics, Chemistry)",
-        "gate": "GATE (Graduate Aptitude Test in Engineering - Postgraduate technical exam)"
+        "jee": "JEE (Engineering)",
+        "neet": "NEET (Medical)",
+        "gate": "GATE (Postgraduate Engineering)"
     }
 
     if exam not in exam_names:
-        return jsonify({"error": f"Unsupported exam: {exam}"}), 400
+        return jsonify({ "error": f"Unsupported exam: {exam}" }), 400
 
     exam_full = exam_names[exam]
 
-    # Build AI Prompt
     if mode == "doubt":
         prompt = (
-            f"You are an expert faculty for {exam_full}. A student is confused about a question and needs help.\n"
-            f"Explain it in simple, clear steps. Break down formulas, concepts, and solve it logically.\n"
-            f"Use short paragraphs, relevant formulas, and examples if needed.\n\n"
+            f"You are an expert in {exam_full}. Explain the following question clearly:\n"
             f"Topic: {topic}\n"
-            f"Question: {question}\n\n"
-            f"Your Explanation:"
+            f"Question: {question}\n"
+            f"Explain with examples and formulas if required.\n"
         )
     elif mode == "trick":
         prompt = (
-            f"You are a top-level {exam_full} coach. Share 5 smart shortcut methods, memory hacks, formula tricks or conceptual tips "
-            f"to solve questions fast in the topic: {topic}.\n\n"
-            f"Use bullet points. Make it exam-focused and beginner-friendly.\n"
+            f"Give 5 smart shortcut tricks and tips for {exam_full} in the topic: {topic}.\n"
+            f"Explain in bullet points for fast revision."
         )
     else:
-        return jsonify({"error": "Invalid mode. Use 'doubt' or 'trick'."}), 400
+        return jsonify({ "error": "Invalid mode. Use 'doubt' or 'trick'." }), 400
 
     headers = {
-        'Authorization': f'Bearer {API_KEY}',
-        'Content-Type': 'application/json'
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json"
     }
 
     payload = {
-        "model": "lgai/exaone-3-5-32b-instruct",  # You can switch to a fast one like 8B if needed
+        "model": "lgai/exaone-3-5-32b-instruct",  # or use a faster one
         "prompt": prompt,
         "max_tokens": 600,
         "temperature": 0.3,
@@ -137,25 +131,18 @@ def ask_ai():
     try:
         res = requests.post(TOGETHER_API_URL, headers=headers, json=payload)
         if res.status_code != 200:
-            return jsonify({"answer": "⚠️ AI model error. Please try again later."}), 500
+            return jsonify({ "answer": "⚠️ AI model error. Try again later." }), 500
 
         result = res.json()
-        ai_text = result.get("output")
-
-        # Fallback
-        if not ai_text:
-            choices = result.get("choices", [])
-            ai_text = choices[0].get("text", "") if choices else ""
+        ai_text = result.get("output") or result.get("choices", [{}])[0].get("text", "")
 
         if not ai_text.strip():
-            ai_text = "⚠️ AI returned no useful answer. Try again."
+            ai_text = "⚠️ AI returned no answer."
 
-        return jsonify({"answer": ai_text.strip()})
+        return jsonify({ "answer": ai_text.strip() })
 
     except Exception as e:
-        return jsonify({"answer": "❌ Error while connecting to AI server."}), 500
-
-
+        return jsonify({ "answer": "❌ Error contacting AI server." }), 500
 
 @app.route('/')
 def index():
@@ -577,9 +564,9 @@ def review_answers():
                            score=score, total=total,
                            weak_areas=weak_areas)
 
-
-
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
+
